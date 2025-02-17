@@ -1,0 +1,102 @@
+definitions:
+  model.MatchUserResponse:
+    properties:
+      is_match:
+        type: boolean
+    type: object
+  model.UserRequest:
+    properties:
+      age:
+        type: integer
+      facebook_id:
+        type: integer
+      friends:
+        type: string
+      name:
+        type: string
+    type: object
+  model.UserResponse:
+    properties:
+      age:
+        type: integer
+      facebook_id:
+        type: integer
+      friends:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /api/match_user:
+    get:
+      consumes:
+      - application/json
+      description: Return match user
+      parameters:
+      - description: Age of the user
+        in: query
+        name: age
+        type: integer
+      - description: Friends of the user
+        in: query
+        name: friends
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Match user
+          schema:
+            $ref: '#/definitions/model.MatchUserResponse'
+      summary: Match user
+      tags:
+      - users
+  /api/users:
+    get:
+      consumes:
+      - application/json
+      description: Return get list user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of users
+          schema:
+            items:
+              $ref: '#/definitions/model.UserResponse'
+            type: array
+      summary: Get list user
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      description: Register user by providing user data
+      parameters:
+      - description: User Data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/model.UserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Register user
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Error Request Body
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Register user
+      tags:
+      - users
+swagger: "2.0"
