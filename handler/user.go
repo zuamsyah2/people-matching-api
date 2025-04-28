@@ -57,7 +57,6 @@ func (userHandler *UserHandler) GetUser(ctx *gin.Context) {
 func (userHandler *UserHandler) RegisterUser(ctx *gin.Context) {
 	var user model.UserRequest
 	if err := ctx.ShouldBindJSON(&user); err != nil {
-		log.Println(err)
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"message": "error request body",
 		})
@@ -66,7 +65,6 @@ func (userHandler *UserHandler) RegisterUser(ctx *gin.Context) {
 
 	err := userHandler.UserService.RegisterUser(user)
 	if err != nil {
-		log.Println(err)
 		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
 			"message": "error register user",
 		})
@@ -99,7 +97,6 @@ func (userHandler *UserHandler) MatchUser(ctx *gin.Context) {
 
 	response, err := userHandler.UserService.MatchUser(ageInt, friends)
 	if err != nil {
-		log.Println(err)
 		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
 			"message": "error match user",
 		})
