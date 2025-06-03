@@ -1,8 +1,7 @@
 package main
 
 import (
-	"fmt"
-	"os"
+	"log"
 	database "people-matching-api/db"
 	_ "people-matching-api/docs"
 	"people-matching-api/helper"
@@ -18,8 +17,7 @@ func main() {
 	helper.LoadEnv()
 	db, err := database.Connection()
 	if err != nil {
-		fmt.Printf("error connecting database: %s", err.Error())
-		os.Exit(1)
+		log.Fatalf("error connecting database: %s", err.Error())
 	}
 	var dbConn *gorm.DB
 	dbConnOnce.Do(func() {

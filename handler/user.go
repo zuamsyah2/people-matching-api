@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"log"
 	"net/http"
 	"strconv"
@@ -9,6 +10,7 @@ import (
 	"people-matching-api/service"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 type UserHandler struct {
@@ -32,7 +34,7 @@ func NewUserHandler(userService service.UserService) *UserHandler {
 func (userHandler *UserHandler) GetUser(ctx *gin.Context) {
 	response, err := userHandler.UserService.GetUser()
 	if err != nil {
-		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
+		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Failed get data",
 		})
 		return
@@ -65,7 +67,7 @@ func (userHandler *UserHandler) RegisterUser(ctx *gin.Context) {
 
 	err := userHandler.UserService.RegisterUser(user)
 	if err != nil {
-		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
+		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"message": "error register user",
 		})
 		return
@@ -97,8 +99,15 @@ func (userHandler *UserHandler) MatchUser(ctx *gin.Context) {
 
 	response, err := userHandler.UserService.MatchUser(ageInt, friends)
 	if err != nil {
-		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
-			"message": "error match user",
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			ctx.JSON(http.StatusNotFound, gin.H{
+				"message": "user not found",
+			})
+			return
+		}
+
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"message": "internal server error",
 		})
 		return
 	}
